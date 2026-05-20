@@ -1,197 +1,110 @@
-import { createSlice } from "@reduxjs/toolkit";
-import userData from "../../data/userData";
+﻿import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { get, post } from "../../api/api";
 
-const savedUser = JSON.parse(
-  localStorage.getItem(
-    "currentUser",
-  ),
-);
-
-const savedUsers = JSON.parse(
-  localStorage.getItem("users"),
-);
+const savedUser = JSON.parse(localStorage.getItem("currentUser"));
 
 const initialState = {
-  currentUser:
-    savedUser || null,
-
-  isAuthenticated:
-    !!savedUser,
-
-  users:
-    savedUsers || userData,
-
+  currentUser: savedUser || null,
+  isAuthenticated: !!savedUser,
+  users: [],
+  status: "idle",
   error: null,
 };
 
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      return await post("/auth/login", credentials);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const signupUser = createAsyncThunk(
+  "auth/signupUser",
+  async (userData, { rejectWithValue }) => {
+    try {
+      return await post("/auth/signup", userData);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const loadUsers = createAsyncThunk(
+  "auth/loadUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await get("/users");
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 const authSlice = createSlice({
   name: "auth",
-
   initialState,
-
   reducers: {
-    loginUser: (
-      state,
-      action,
-    ) => {
-      const {
-        email,
-        password,
-        role,
-      } = action.payload;
-
-      const user =
-        state.users.find(
-          (item) =>
-            item.email ===
-              email &&
-            item.password ===
-              password &&
-            item.role === role,
-        );
-
-      if (user) {
-        state.currentUser =
-          user;
-
-        state.isAuthenticated =
-          true;
-
+    logoutUser: (state) => {
+      state.currentUser = null;
+      state.isAuthenticated = false;
+      state.error = null;
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("authToken");
+    },
+    clearAuthError: (state) => {
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.status = "loading";
         state.error = null;
-
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.currentUser = action.payload.user;
+        state.isAuthenticated = true;
+        state.error = null;
         localStorage.setItem(
           "currentUser",
-          JSON.stringify(user),
+          JSON.stringify(action.payload.user),
         );
-      } else {
-        state.error =
-          "Invalid email or password";
-      }
-    },
-
-    signupUser: (
-      state,
-      action,
-    ) => {
-      const userExists =
-        state.users.find(
-          (user) =>
-            user.email ===
-            action.payload.email,
-        );
-
-      if (userExists) {
-        state.error =
-          "Email already exists";
-
-        return;
-      }
-
-    const newUser = action.payload;
-
-      state.users.push(
-        newUser,
-      );
-
-      localStorage.setItem(
-        "users",
-        JSON.stringify(
-          state.users,
-        ),
-      );
-
-      state.error = null;
-    },
-
-    logoutUser: (state) => {
-      state.currentUser =
-        null;
-
-      state.isAuthenticated =
-        false;
-
-      state.error = null;
-
-      localStorage.removeItem(
-        "currentUser",
-      );
-    },
-
-    updateProfile: (
-      state,
-      action,
-    ) => {
-      const updatedUser =
-        action.payload;
-
-      state.users =
-        state.users.map(
-          (user) =>
-            user.id ===
-            updatedUser.id
-              ? updatedUser
-              : user,
-        );
-
-      state.currentUser =
-        updatedUser;
-
-      localStorage.setItem(
-        "users",
-        JSON.stringify(
-          state.users,
-        ),
-      );
-
-      localStorage.setItem(
-        "currentUser",
-        JSON.stringify(
-          updatedUser,
-        ),
-      );
-    },
-
-    forgotPassword: (
-      state,
-      action,
-    ) => {
-      const {
-        email,
-        newPassword,
-      } = action.payload;
-
-      const user =
-        state.users.find(
-          (u) =>
-            u.email === email,
-        );
-
-      if (user) {
-        user.password =
-          newPassword;
-
-        localStorage.setItem(
-          "users",
-          JSON.stringify(
-            state.users,
-          ),
-        );
-
+        localStorage.setItem("authToken", action.payload.token);
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(signupUser.pending, (state) => {
+        state.status = "loading";
         state.error = null;
-      } else {
-        state.error =
-          "Email not found";
-      }
-    },
+      })
+      .addCase(signupUser.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.error = null;
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(loadUsers.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loadUsers.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.users = action.payload;
+      })
+      .addCase(loadUsers.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || action.error.message;
+      });
   },
 });
 
-export const {
-  loginUser,
-  signupUser,
-  logoutUser,
-  updateProfile,
-  forgotPassword,
-} = authSlice.actions;
-
+export const { logoutUser, clearAuthError } = authSlice.actions;
 export default authSlice.reducer;

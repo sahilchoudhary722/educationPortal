@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../features/auth/authSlice";
+import { loginUser, clearAuthError } from "../features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, currentUser, error } = useSelector(
+  const { isAuthenticated, currentUser, error, status } = useSelector(
     (state) => state.auth,
   );
 
@@ -28,6 +27,7 @@ function Login() {
   }, [isAuthenticated, currentUser, navigate]);
 
   const handleChange = (e) => {
+    dispatch(clearAuthError());
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -93,8 +93,12 @@ function Login() {
                 </select>
               </div>
 
-              <button className="btn login-btn-modern" type="submit">
-                Login
+              <button
+                className="btn login-btn-modern"
+                type="submit"
+                disabled={status === "loading"}
+              >
+                {status === "loading" ? "Logging in..." : "Login"}
               </button>
               <p style={{ marginTop: "20px" }}>
                 Don't have account? <Link to="/signup">Signup</Link>

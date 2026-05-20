@@ -1,12 +1,29 @@
+import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../features/auth/authSlice";
+import { logoutUser, loadUsers } from "../features/auth/authSlice";
+import { loadAssignments } from "../features/assignment/assignmentSlice";
+import { loadAttendance } from "../features/attendance/attendanceSlice";
+import { loadLibrary } from "../features/library/librarySlice";
+import { loadProducts } from "../features/products/productSlice";
+import { loadCart } from "../features/cart/cartSlice";
 
 function DashboardLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser, isAuthenticated } = useSelector((state) => state.auth);
   const cartCount = useSelector((state) => state.cart.items.length);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    dispatch(loadUsers());
+    dispatch(loadAssignments());
+    dispatch(loadAttendance());
+    dispatch(loadLibrary());
+    dispatch(loadProducts());
+    dispatch(loadCart());
+  }, [dispatch, isAuthenticated]);
 
   const handleLogout = () => {
     dispatch(logoutUser());

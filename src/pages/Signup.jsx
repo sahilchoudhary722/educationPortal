@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser } from "../features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { addStudentAttendance } from "../features/attendance/attendanceSlice";
 
 function Signup() {
   const dispatch = useDispatch();
@@ -49,19 +48,12 @@ function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-   const newStudent = {
-  id: Date.now(),
-  ...formData,
-};
+    const newStudent = {
+      id: Date.now(),
+      ...formData,
+    };
 
-dispatch(signupUser(newStudent));
-
-if (formData.role === "student") {
-  dispatch(
-    addStudentAttendance(newStudent),
-  );
-}
-
+    dispatch(signupUser(newStudent));
     navigate("/login");
   };
 
