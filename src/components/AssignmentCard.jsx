@@ -53,6 +53,39 @@ function AssignmentCard({ assignment, currentUser, onSubmit }) {
     setSelectedFile(file || null);
   };
 
+  const renderFileActions = (fileUrl, fileName) => {
+    if (!fileUrl || !fileName) return null;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginTop: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-outline"
+          style={{ fontSize: "12px", padding: "8px 12px" }}
+        >
+          View
+        </a>
+        <a
+          href={fileUrl}
+          download={fileName}
+          className="btn btn-secondary"
+          style={{ fontSize: "12px", padding: "8px 12px" }}
+        >
+          Download
+        </a>
+      </div>
+    );
+  };
+
   // STUDENT VIEW
   if (currentUser?.role === "student") {
     return (
@@ -225,6 +258,10 @@ function AssignmentCard({ assignment, currentUser, onSubmit }) {
             >
               {assignment.assignmentFileName}
             </p>
+            {renderFileActions(
+              assignment.assignmentFileUrl,
+              assignment.assignmentFileName,
+            )}
           </div>
         )}
 
@@ -250,9 +287,15 @@ function AssignmentCard({ assignment, currentUser, onSubmit }) {
               ✅ Submitted On: {assignment.submittedAt}
             </p>
             {assignment.submittedFileName && (
-              <p style={{ margin: "0", color: "#166534" }}>
-                📄 File: {assignment.submittedFileName}
-              </p>
+              <>
+                <p style={{ margin: "0", color: "#166534" }}>
+                  📄 File: {assignment.submittedFileName}
+                </p>
+                {renderFileActions(
+                  assignment.submittedFileUrl,
+                  assignment.submittedFileName,
+                )}
+              </>
             )}
           </div>
         )}
@@ -280,7 +323,7 @@ function AssignmentCard({ assignment, currentUser, onSubmit }) {
             <input
               className="input"
               type="file"
-              accept=".pdf,.doc,.docx"
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
               onChange={handleFileChange}
               style={{ fontSize: "12px", padding: "8px", marginBottom: "8px" }}
             />
@@ -406,6 +449,41 @@ function AssignmentCard({ assignment, currentUser, onSubmit }) {
         </div>
       </div>
 
+      {assignment.assignmentFileName?.trim() && (
+        <div
+          style={{
+            padding: "12px",
+            backgroundColor: "#f0f9ff",
+            borderRadius: "6px",
+            marginBottom: "14px",
+            fontSize: "12px",
+          }}
+        >
+          <p
+            style={{
+              margin: "0 0 6px 0",
+              fontWeight: "700",
+              color: "#0c4a6e",
+            }}
+          >
+            📎 Assignment File:
+          </p>
+          <p
+            style={{
+              margin: "0 0 10px 0",
+              color: "#0369a1",
+              wordBreak: "break-all",
+            }}
+          >
+            {assignment.assignmentFileName}
+          </p>
+          {renderFileActions(
+            assignment.assignmentFileUrl,
+            assignment.assignmentFileName,
+          )}
+        </div>
+      )}
+
       {/* STUDENT DETAILS */}
       {assignment.submissionsDetailed?.length > 0 && (
         <div>
@@ -469,16 +547,22 @@ function AssignmentCard({ assignment, currentUser, onSubmit }) {
                   </p>
                 )}
                 {item.submittedFileName && (
-                  <p
-                    style={{
-                      margin: "4px 0 0 0",
-                      color: "#2563eb",
-                      fontSize: "11px",
-                      wordBreak: "break-all",
-                    }}
-                  >
-                    📄 {item.submittedFileName}
-                  </p>
+                  <>
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        color: "#2563eb",
+                        fontSize: "11px",
+                        wordBreak: "break-all",
+                      }}
+                    >
+                      📄 {item.submittedFileName}
+                    </p>
+                    {renderFileActions(
+                      item.submittedFileUrl,
+                      item.submittedFileName,
+                    )}
+                  </>
                 )}
               </div>
             ))}

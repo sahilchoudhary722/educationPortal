@@ -22,6 +22,10 @@ function Assignments() {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [filterView, setFilterView] = useState("all");
+  const [filterStudentName, setFilterStudentName] = useState("");
+  const [filterStudentId, setFilterStudentId] = useState("");
+  const [filterSubject, setFilterSubject] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
 
   // ================= ALL STUDENTS =================
 
@@ -34,8 +38,7 @@ function Assignments() {
       submitAssignment({
         assignmentId,
         studentId: currentUser.id,
-        submittedFileName: selectedFile?.name || "",
-        submittedFileType: selectedFile?.type || "",
+        submissionFile: selectedFile,
       }),
     );
 
@@ -128,12 +131,52 @@ function Assignments() {
 
   // ================= TEACHER FILTERS =================
 
-  const filteredAssignmentList =
-    filterView === "all"
-      ? assignmentList
-      : filterView === "pending"
-        ? assignmentList.filter((a) => a.pendingCount > 0)
-        : assignmentList.filter((a) => a.submittedCount > 0);
+  const filteredAssignmentList = assignmentList
+    .filter((assignment) => {
+      if (
+        filterSubject &&
+        !assignment.subject.toLowerCase().includes(filterSubject.toLowerCase())
+      ) {
+        return false;
+      }
+
+      if (filterStatus && currentUser?.role === "teacher") {
+        const matchesStatus = assignment.submissionsDetailed.some(
+          (sub) => sub.status === filterStatus,
+        );
+        if (!matchesStatus) {
+          return false;
+        }
+      }
+
+      if (filterStudentName && currentUser?.role === "teacher") {
+        const matchesStudent = assignment.submissionsDetailed.some((sub) =>
+          sub.studentName
+            .toLowerCase()
+            .includes(filterStudentName.toLowerCase()),
+        );
+        if (!matchesStudent) {
+          return false;
+        }
+      }
+
+      if (filterStudentId && currentUser?.role === "teacher") {
+        const matchesStudentId = assignment.submissionsDetailed.some((sub) =>
+          String(sub.studentId).includes(filterStudentId),
+        );
+        if (!matchesStudentId) {
+          return false;
+        }
+      }
+
+      return true;
+    })
+    .filter((assignment) => {
+      if (filterView === "all") return true;
+      if (filterView === "pending") return assignment.pendingCount > 0;
+      if (filterView === "submitted") return assignment.submittedCount > 0;
+      return true;
+    });
 
   return (
     <div style={{ padding: "20px" }}>
@@ -339,6 +382,49 @@ function Assignments() {
             }}
           >
             <h2 className="section-title">🔍 Filter Assignments</h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "12px",
+                marginBottom: "14px",
+              }}
+            >
+              <input
+                className="input"
+                type="text"
+                placeholder="Filter by student name"
+                value={filterStudentName}
+                onChange={(e) => setFilterStudentName(e.target.value)}
+              />
+
+              <input
+                className="input"
+                type="text"
+                placeholder="Filter by student ID"
+                value={filterStudentId}
+                onChange={(e) => setFilterStudentId(e.target.value)}
+              />
+
+              <input
+                className="input"
+                type="text"
+                placeholder="Filter by subject"
+                value={filterSubject}
+                onChange={(e) => setFilterSubject(e.target.value)}
+              />
+
+              <select
+                className="input"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Submitted">Submitted</option>
+              </select>
+            </div>
 
             <select
               className="input"

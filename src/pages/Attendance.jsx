@@ -6,15 +6,31 @@ import AttendanceCard from "../components/AttendanceCard";
 function Attendance() {
   const dispatch = useDispatch();
   const records = useSelector((state) => state?.attendance?.records ?? []);
- const users = useSelector((state) => state.auth.users);
+  const users = useSelector((state) => state.auth.users);
   const { currentUser } = useSelector((state) => state?.auth);
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0],
   );
   const [filterView, setFilterView] = useState("today"); // "today", "all", "low"
+  const [filterStudent, setFilterStudent] = useState("");
+  const [filterStudentId, setFilterStudentId] = useState("");
+  const [filterSubject, setFilterSubject] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterDate, setFilterDate] = useState("");
 
-  const filteredRecords =
+  const formatRecordDate = (record) => {
+    if (!record?.createdAt) return "";
+    return new Date(record.createdAt).toISOString().split("T")[0];
+  };
+
+  const getAttendanceStatus = (record) => {
+    if (record.percentage >= 75) return "Good";
+    if (record.percentage >= 50) return "Warning";
+    return "Critical";
+  };
+
+  const baseRecords =
     currentUser?.role === "student"
       ? records.filter((record) => record.studentId === currentUser.id)
       : records.map((record) => {
@@ -24,6 +40,42 @@ function Attendance() {
             studentName: student?.name || "Unknown Student",
           };
         });
+
+  const filteredRecords = baseRecords.filter((record) => {
+    const recordDate = formatRecordDate(record);
+    const status = getAttendanceStatus(record);
+
+    if (
+      filterStudent &&
+      !record.studentName?.toLowerCase().includes(filterStudent.toLowerCase())
+    ) {
+      return false;
+    }
+
+    if (
+      filterStudentId &&
+      !String(record.studentId).includes(filterStudentId)
+    ) {
+      return false;
+    }
+
+    if (
+      filterSubject &&
+      !record.subject?.toLowerCase().includes(filterSubject.toLowerCase())
+    ) {
+      return false;
+    }
+
+    if (filterStatus && status !== filterStatus) {
+      return false;
+    }
+
+    if (filterDate && recordDate !== filterDate) {
+      return false;
+    }
+
+    return true;
+  });
 
   // Filter based on view
   let displayedRecords = filteredRecords;
@@ -240,7 +292,7 @@ function Attendance() {
             gap: "12px",
           }}
         >
-          {currentUser?.role === "student" ? (
+          {currentUser?.role === "teacher" && (
             <div>
               <label
                 style={{
@@ -249,61 +301,126 @@ function Attendance() {
                   color: "#475569",
                 }}
               >
-                View
+                Student Name
               </label>
-              <select
+              <input
+                type="text"
                 className="input"
-                value={filterView}
-                onChange={(e) => setFilterView(e.target.value)}
+                placeholder="Search student"
+                value={filterStudent}
+                onChange={(e) => setFilterStudent(e.target.value)}
                 style={{ marginTop: "6px" }}
-              >
-                <option value="all">All Subjects</option>
-                <option value="low">Low Attendance (&lt;75%)</option>
-              </select>
+              />
             </div>
-          ) : (
-            <>
-              <div>
-                <label
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "600",
-                    color: "#475569",
-                  }}
-                >
-                  Date
-                </label>
-                <input
-                  type="date"
-                  className="input"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  style={{ marginTop: "6px" }}
-                />
-              </div>
-
-              <div>
-                <label
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "600",
-                    color: "#475569",
-                  }}
-                >
-                  View
-                </label>
-                <select
-                  className="input"
-                  value={filterView}
-                  onChange={(e) => setFilterView(e.target.value)}
-                  style={{ marginTop: "6px" }}
-                >
-                  <option value="all">All Subjects</option>
-                  <option value="low">Low Attendance (&lt;75%)</option>
-                </select>
-              </div>
-            </>
           )}
+
+          {currentUser?.role === "teacher" && (
+            <div>
+              <label
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "#475569",
+                }}
+              >
+                Student ID
+              </label>
+              <input
+                type="text"
+                className="input"
+                placeholder="Search student ID"
+                value={filterStudentId}
+                onChange={(e) => setFilterStudentId(e.target.value)}
+                style={{ marginTop: "6px" }}
+              />
+            </div>
+          )}
+
+          <div>
+            <label
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#475569",
+              }}
+            >
+              Subject
+            </label>
+            <input
+              type="text"
+              className="input"
+              placeholder="Enter subject"
+              value={filterSubject}
+              onChange={(e) => setFilterSubject(e.target.value)}
+              style={{ marginTop: "6px" }}
+            />
+          </div>
+
+          <div>
+            <label
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#475569",
+              }}
+            >
+              Status
+            </label>
+            <select
+              className="input"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              style={{ marginTop: "6px" }}
+            >
+              <option value="">All Status</option>
+              <option value="Good">Good</option>
+              <option value="Warning">Warning</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#475569",
+              }}
+            >
+              Date
+            </label>
+            <input
+              type="date"
+              className="input"
+              value={filterDate || selectedDate}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setFilterDate(e.target.value);
+              }}
+              style={{ marginTop: "6px" }}
+            />
+          </div>
+
+          <div>
+            <label
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#475569",
+              }}
+            >
+              View
+            </label>
+            <select
+              className="input"
+              value={filterView}
+              onChange={(e) => setFilterView(e.target.value)}
+              style={{ marginTop: "6px" }}
+            >
+              <option value="all">All Subjects</option>
+              <option value="low">Low Attendance (&lt;75%)</option>
+            </select>
+          </div>
         </div>
       </div>
 

@@ -38,9 +38,8 @@ function AddAssignment() {
         subject: formData.subject,
         dueDate: formData.dueDate,
         assignedBy: currentUser?.name || "Teacher",
-        assignmentFileName: assignmentFile?.name || "",
-        assignmentFileType: assignmentFile?.type || "",
-      })
+        assignmentFile: assignmentFile,
+      }),
     );
 
     setSuccessMessage("Assignment uploaded successfully.");
@@ -54,7 +53,9 @@ function AddAssignment() {
     <div className="card" style={{ maxWidth: "600px" }}>
       <h1 className="page-title">Add Assignment</h1>
 
-      {successMessage && <div className="success-message">{successMessage}</div>}
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
 
       <form className="form-grid" onSubmit={handleSubmit}>
         <input
@@ -92,11 +93,13 @@ function AddAssignment() {
           <input
             className="input"
             type="file"
-            accept=".pdf,.doc,.docx"
+            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
             onChange={handleFileChange}
           />
           {assignmentFile && (
-            <p className="file-name-text">Selected File: {assignmentFile.name}</p>
+            <p className="file-name-text">
+              Selected File: {assignmentFile.name}
+            </p>
           )}
         </div>
 
