@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, loadUsers } from "../features/auth/authSlice";
 import { loadAssignments } from "../features/assignment/assignmentSlice";
 import { loadAttendance } from "../features/attendance/attendanceSlice";
-import { loadLibrary } from "../features/library/LibrarySlice";
+import { loadLibrary } from "../features/library/librarySlice";
 import { loadProducts } from "../features/products/productSlice";
 import { loadCart } from "../features/cart/cartSlice";
 

@@ -5,7 +5,7 @@ import {
   returnBook,
   approveRequest,
   payFine,
-} from "../features/library/LibrarySlice";
+} from "../features/library/librarySlice";
 
 import LibraryCard from "../components/LibraryCard";
 import RequestList from "../components/RequestList";
@@ -337,4 +337,4 @@ function Library() {
   );
 }
 
-export default Library;
+export default library;
