@@ -11,7 +11,7 @@ import TeacherDashboard from "../pages/TeacherDashboard";
 import Assignments from "../pages/Assignments";
 import AddAssignment from "../pages/AddAssignment";
 import Attendance from "../pages/Attendance";
-import Library from "../pages/library";
+import Library from "../pages/Library";
 import Store from "../pages/Store";
 import Cart from "../pages/Cart";
 import NotFound from "../pages/NotFound";
