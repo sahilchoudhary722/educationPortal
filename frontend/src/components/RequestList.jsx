@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   approveRequest,
   rejectRequest,
-} from "../features/library/librarySlice";
+} from "../features/library/LibrarySlice";
 import "./RequestList.css";
 
 function RequestList() {

@@ -7,7 +7,7 @@ import {
   removeFromWishlist,
   reserveBook,
   cancelReservation,
-} from "../features/library/librarySlice";
+} from "../features/library/LibrarySlice";
 
 import "./LibraryCard.css";
 

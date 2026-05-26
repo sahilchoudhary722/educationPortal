@@ -5,7 +5,7 @@ import {
   returnBook,
   approveRequest,
   payFine,
-} from "../features/library/librarySlice";
+} from "../features/library/LibrarySlice";
 
 import LibraryCard from "../components/LibraryCard";
 import RequestList from "../components/RequestList";
