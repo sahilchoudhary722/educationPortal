@@ -28,3 +28,7 @@ server/node_modules/
 server/.env
 server/uploads/
 .env
+
+node_modules
+dist
+.env
