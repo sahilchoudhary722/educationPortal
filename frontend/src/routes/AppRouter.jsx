@@ -11,7 +11,7 @@ import TeacherDashboard from "../pages/TeacherDashboard";
 import Assignments from "../pages/Assignments";
 import AddAssignment from "../pages/AddAssignment";
 import Attendance from "../pages/Attendance";
-import Library from "../pages/Library";
+import Library from "../pages/library";
 import Store from "../pages/Store";
 import Cart from "../pages/Cart";
 import NotFound from "../pages/NotFound";
@@ -22,9 +22,7 @@ import Students from "../pages/Students";
 import StudentProfile from "../pages/StudentProfile";
 
 function AppRouter() {
-  const { isAuthenticated, currentUser } = useSelector(
-    (state) => state.auth,
-  );
+  const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
 
   return (
     <Routes>
@@ -35,11 +33,7 @@ function AppRouter() {
       <Route
         path="/"
         element={
-          isAuthenticated ? (
-            <DashboardLayout />
-          ) : (
-            <Navigate to="/login" />
-          )
+          isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" />
         }
       >
         <Route index element={<Home />} />
@@ -69,11 +63,7 @@ function AppRouter() {
         <Route
           path="students"
           element={
-            currentUser?.role === "teacher" ? (
-              <Students />
-            ) : (
-              <Navigate to="/" />
-            )
+            currentUser?.role === "teacher" ? <Students /> : <Navigate to="/" />
           }
         />
 
