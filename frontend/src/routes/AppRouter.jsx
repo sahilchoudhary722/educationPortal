@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 
@@ -25,7 +26,12 @@ function AppRouter() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route
+        path="/"
+        element={
+          isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />
+        }
+      />
 
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
@@ -39,13 +45,15 @@ function AppRouter() {
           )
         }
       >
+        <Route path="/home" element={<Home />} />
+
         <Route
           path="/student-dashboard"
           element={
             currentUser?.role === "student" ? (
               <StudentDashboard />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/home" replace />
             )
           }
         />
@@ -56,7 +64,7 @@ function AppRouter() {
             currentUser?.role === "teacher" ? (
               <TeacherDashboard />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/home" replace />
             )
           }
         />
@@ -67,7 +75,7 @@ function AppRouter() {
             currentUser?.role === "teacher" ? (
               <Students />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/home" replace />
             )
           }
         />
@@ -78,7 +86,7 @@ function AppRouter() {
             currentUser?.role === "teacher" ? (
               <StudentProfile />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/home" replace />
             )
           }
         />
@@ -95,7 +103,7 @@ function AppRouter() {
             currentUser?.role === "teacher" ? (
               <AddAssignment />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/home" replace />
             )
           }
         />

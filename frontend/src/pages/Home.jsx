@@ -8,7 +8,7 @@ function Home() {
   const assignments = useSelector((state) => state.assignments?.assignments || []);
   const attendanceData = useSelector((state) => state.attendance?.records || []);
   const libraryBooks = useSelector((state) => state.library?.books || []);
-  const storeItems = useSelector((state) => state.store?.items || []);
+  const storeItems = useSelector((state) => state.products?.items || []);
   const cartItems = useSelector((state) => state.cart?.items || []);
   const { currentUser } = useSelector((state) => state.auth || { currentUser: null });
 
