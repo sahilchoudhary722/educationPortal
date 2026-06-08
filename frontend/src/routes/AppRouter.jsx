@@ -26,12 +26,7 @@ function AppRouter() {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />
-        }
-      />
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
