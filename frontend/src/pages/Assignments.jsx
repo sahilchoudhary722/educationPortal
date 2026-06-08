@@ -64,14 +64,12 @@ function Assignments() {
 
           return {
             ...assignment,
-
             status: submission?.status || "Pending",
-
             submittedAt: submission?.submittedAt || "",
-
             submittedFileName: submission?.submittedFileName || "",
-
             submittedFileType: submission?.submittedFileType || "",
+            submittedFileUrl: submission?.submittedFileUrl || "",
+            assignmentFileUrl: assignment?.assignmentFileUrl || "",
           };
         })
       : assignments.map((assignment) => {
@@ -99,6 +97,8 @@ function Assignments() {
               submittedFileName: existingSubmission?.submittedFileName || "",
 
               submittedFileType: existingSubmission?.submittedFileType || "",
+
+              submittedFileUrl: existingSubmission?.submittedFileUrl || "",
             };
           });
 

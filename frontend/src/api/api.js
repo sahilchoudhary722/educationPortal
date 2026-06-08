@@ -1,5 +1,6 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL ||
+  "https://educationportal-mce4.onrender.com/api";
 
 const getToken = () => localStorage.getItem("authToken");
 
@@ -11,6 +12,7 @@ const buildHeaders = (isJson = true) => {
   }
 
   const token = getToken();
+
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -22,7 +24,7 @@ const handleResponse = async (response) => {
   const content = await response.json().catch(() => null);
 
   if (!response.ok) {
-    const message = content?.message || "Server error";
+    const message = content?.message || `Server error: ${response.status}`;
     throw new Error(message);
   }
 
@@ -32,12 +34,13 @@ const handleResponse = async (response) => {
 export const apiFetch = async (endpoint, options = {}) => {
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-    return handleResponse(response);
+    return await handleResponse(response);
   } catch (error) {
     const message =
       error?.message === "Failed to fetch"
-        ? "Unable to connect to the server. Please make sure the backend is running."
+        ? "Unable to connect to the server. Please check backend deployment."
         : error?.message || "Network error";
+
     throw new Error(message);
   }
 };

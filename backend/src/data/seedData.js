@@ -38,6 +38,7 @@ const assignmentData = [
     assignedBy: "Anil Sir",
     assignmentFileName: "",
     assignmentFileType: "",
+    assignmentFileUrl: "",
     submissions: [
       {
         studentId: 1,
@@ -45,13 +46,15 @@ const assignmentData = [
         submittedAt: "",
         submittedFileName: "",
         submittedFileType: "",
+        submittedFileUrl: "",
       },
       {
         studentId: 2,
-        status: "Submitted",
-        submittedAt: "18 Mar 2026",
-        submittedFileName: "Sachin_DBMS_Assignment.pdf",
-        submittedFileType: "application/pdf",
+        status: "Pending",
+        submittedAt: "",
+        submittedFileName: "",
+        submittedFileType: "",
+        submittedFileUrl: "",
       },
     ],
   },
@@ -61,15 +64,17 @@ const assignmentData = [
     subject: "React",
     dueDate: "22 Mar 2026",
     assignedBy: "Anil Sir",
-    assignmentFileName: "React_Project_Requirements.pdf",
-    assignmentFileType: "application/pdf",
+    assignmentFileName: "",
+    assignmentFileType: "",
+    assignmentFileUrl: "",
     submissions: [
       {
         studentId: 1,
-        status: "Submitted",
-        submittedAt: "17 Mar 2026",
-        submittedFileName: "Sahil_React_Project.pdf",
-        submittedFileType: "application/pdf",
+        status: "Pending",
+        submittedAt: "",
+        submittedFileName: "",
+        submittedFileType: "",
+        submittedFileUrl: "",
       },
       {
         studentId: 2,
@@ -77,6 +82,7 @@ const assignmentData = [
         submittedAt: "",
         submittedFileName: "",
         submittedFileType: "",
+        submittedFileUrl: "",
       },
     ],
   },
@@ -88,6 +94,7 @@ const assignmentData = [
     assignedBy: "Anil Sir",
     assignmentFileName: "",
     assignmentFileType: "",
+    assignmentFileUrl: "",
     submissions: [
       {
         studentId: 1,
@@ -95,6 +102,7 @@ const assignmentData = [
         submittedAt: "",
         submittedFileName: "",
         submittedFileType: "",
+        submittedFileUrl: "",
       },
       {
         studentId: 2,
@@ -102,6 +110,7 @@ const assignmentData = [
         submittedAt: "",
         submittedFileName: "",
         submittedFileType: "",
+        submittedFileUrl: "",
       },
     ],
   },
