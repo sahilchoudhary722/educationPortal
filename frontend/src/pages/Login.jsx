@@ -106,15 +106,6 @@ function Login() {
             </form>
 
             {error && <p className="login-error">{error}</p>}
-
-            <div className="login-demo-box">
-              <p>
-                <strong>Student Login:</strong> sahil@gmail.com / 1234
-              </p>
-              <p>
-                <strong>Teacher Login:</strong> teacher@gmail.com / 1234
-              </p>
-            </div>
           </div>
 
           <div className="login-right">
