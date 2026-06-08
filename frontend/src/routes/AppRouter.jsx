@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 
@@ -26,75 +25,77 @@ function AppRouter() {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
+      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       <Route
-        path="/"
         element={
-          isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" />
+          isAuthenticated ? (
+            <DashboardLayout />
+          ) : (
+            <Navigate to="/login" replace />
+          )
         }
       >
-        <Route index element={<Home />} />
-
         <Route
-          path="student-dashboard"
+          path="/student-dashboard"
           element={
             currentUser?.role === "student" ? (
               <StudentDashboard />
             ) : (
-              <Navigate to="/" />
+              <Navigate to="/login" replace />
             )
           }
         />
 
         <Route
-          path="teacher-dashboard"
+          path="/teacher-dashboard"
           element={
             currentUser?.role === "teacher" ? (
               <TeacherDashboard />
             ) : (
-              <Navigate to="/" />
+              <Navigate to="/login" replace />
             )
           }
         />
 
         <Route
-          path="students"
+          path="/students"
           element={
-            currentUser?.role === "teacher" ? <Students /> : <Navigate to="/" />
+            currentUser?.role === "teacher" ? (
+              <Students />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
 
         <Route
-          path="students/:studentId"
+          path="/students/:studentId"
           element={
             currentUser?.role === "teacher" ? (
               <StudentProfile />
             ) : (
-              <Navigate to="/" />
+              <Navigate to="/login" replace />
             )
           }
         />
 
-        <Route path="assignments" element={<Assignments />} />
-
-        <Route path="attendance" element={<Attendance />} />
-
-        <Route path="library" element={<Library />} />
-
-        <Route path="store" element={<Store />} />
-
-        <Route path="cart" element={<Cart />} />
+        <Route path="/assignments" element={<Assignments />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/library" element={<Library />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/cart" element={<Cart />} />
 
         <Route
-          path="add-assignment"
+          path="/add-assignment"
           element={
             currentUser?.role === "teacher" ? (
               <AddAssignment />
             ) : (
-              <Navigate to="/" />
+              <Navigate to="/login" replace />
             )
           }
         />

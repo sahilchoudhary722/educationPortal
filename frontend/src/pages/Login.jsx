@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const { isAuthenticated, currentUser, error, status } = useSelector(
     (state) => state.auth,
   );
@@ -18,16 +19,17 @@ function Login() {
 
   useEffect(() => {
     if (isAuthenticated && currentUser?.role === "student") {
-      navigate("/student-dashboard");
+      navigate("/student-dashboard", { replace: true });
     }
 
     if (isAuthenticated && currentUser?.role === "teacher") {
-      navigate("/teacher-dashboard");
+      navigate("/teacher-dashboard", { replace: true });
     }
   }, [isAuthenticated, currentUser, navigate]);
 
   const handleChange = (e) => {
     dispatch(clearAuthError());
+
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -65,6 +67,7 @@ function Login() {
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -77,6 +80,7 @@ function Login() {
                   placeholder="Enter password"
                   value={formData.password}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -100,8 +104,9 @@ function Login() {
               >
                 {status === "loading" ? "Logging in..." : "Login"}
               </button>
+
               <p style={{ marginTop: "20px" }}>
-                Don't have account? <Link to="/signup">Signup</Link>
+                Don&apos;t have account? <Link to="/signup">Signup</Link>
               </p>
             </form>
 
