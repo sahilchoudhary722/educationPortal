@@ -7,8 +7,8 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isAuthenticated, currentUser, error, status } = useSelector(
-    (state) => state.auth,
+  const { isAuthenticated, error, status } = useSelector(
+    (state) => state.auth
   );
 
   const [formData, setFormData] = useState({
@@ -18,14 +18,10 @@ function Login() {
   });
 
   useEffect(() => {
-    if (isAuthenticated && currentUser?.role === "student") {
-      navigate("/student-dashboard", { replace: true });
+    if (isAuthenticated) {
+      navigate("/home", { replace: true });
     }
-
-    if (isAuthenticated && currentUser?.role === "teacher") {
-      navigate("/teacher-dashboard", { replace: true });
-    }
-  }, [isAuthenticated, currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     dispatch(clearAuthError());
